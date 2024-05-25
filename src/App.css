@@ -94,10 +94,10 @@ form button {
   box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.5);
 }
 .Weather-detail p {
-  font-size: 0.5rem;
+  font-size: 1rem;
 }
 .Weather-detail h2 {
-  font-size: 2rem;
+  font-size: 1.5rem !important;
 }
 #detail {
   position: relative;
@@ -114,16 +114,16 @@ form button {
   padding-top: 10%;
 }
 #detail p {
-  font-size: 0.5rem;
-  font-weight: 400;
+  font-size: 1rem;
+  font-weight: bold;
 }
 #detail h2 {
-  font-size: 2rem;
-  font-weight: 700;
+  font-size: 2rem !important;
+  font-weight: 900;
 }
 #wind p {
-  font-size: 1rem;
-  font-weight: 400;
+  font-size: 1.3rem;
+  font-weight: bold;
 }
 @media screen and (max-width: 768px) {
   .input-box {
