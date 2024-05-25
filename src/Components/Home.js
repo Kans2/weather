@@ -1,20 +1,28 @@
 import React, { useState, useEffect } from "react";
-import clear from "../Assets/white-cloud-blue-sky.jpg";
+import clear from "../Assets/pexels-wdnet-96622.jpg";
 
-import rise from "../Assets/clear sky.jpg";
-import cold from "../Assets/snow.jpg";
+import rise from "../Assets/clear sky.png";
+import cold from "../Assets/snow.png";
 import rainImage from "../Assets/rain.jpg";
 import Haze from "../Assets/haze.jpg";
 import { WiSunset } from "react-icons/wi";
+import nightSky from "../Assets/night.jpg";
 function Home() {
   const [city, setCity] = useState("");
   const [weatherData, setWeatherData] = useState(null);
   const [backgroundImage, setBackgroundImage] = useState("");
   const [uvIndex, setUvIndex] = useState(null);
   const [chanceOfRain, setChanceOfRain] = useState(null);
+  const [weatherCondition, setWeatherCondition] = useState("");
 
+  const [screenWidth, setScreenWidth] = useState(window.innerWidth);
+
+ 
   useEffect(() => {
-    if (
+    const currentTime = new Date().getHours(); // Get current hour
+    if (currentTime === 18 && new Date().getMinutes() >= 30) { // Check if it's 6:30 PM or later
+      setBackgroundImage(nightSky); // Set night sky background
+    } else if (
       weatherData &&
       weatherData.weather &&
       weatherData.weather[0].main === "Rain"
@@ -29,6 +37,16 @@ function Home() {
     }
   }, [weatherData]);
 
+  useEffect(() => {
+    const handleResize = () => {
+      setScreenWidth(window.innerWidth);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const response = await fetch(
@@ -41,6 +59,7 @@ function Home() {
       return;
     }
     setWeatherData(data);
+    setWeatherCondition(data.weather[0].main);
 
     const uvResponse = await fetch(
       `https://api.openweathermap.org/data/2.5/uvi?lat=${data.coord.lat}&lon=${data.coord.lon}&appid=916a25347dbdf0bfe621cc07988cce54`
@@ -67,7 +86,12 @@ function Home() {
   return (
     <div
       className="container-fluid"
-      style={{ backgroundImage: `url(${backgroundImage}) ` }}
+      style={{
+        backgroundImage: `url(${backgroundImage})`,
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+        backgroundSize: "cover",
+      }}
     >
       <div className="header">
         <form onSubmit={handleSubmit}>
@@ -105,7 +129,7 @@ function Home() {
                       />
                     </div>
 
-                    <h2>{weatherData.name}</h2>
+                    <h2 style={{fontSize:"2rem"}}>{weatherData.name}</h2>
                     <p>
                       Temperature: {weatherData.main && weatherData.main.temp}°C
                     </p>
@@ -124,8 +148,18 @@ function Home() {
           <div className="col-lg-4 col-md-12 col-sm-12">
             <div className="sunset">
               {weatherData && (
-                <div id="sun">
-                 < WiSunset style={{width:'40%', height:'40%', cursor:'pointer'}}/>
+                <div
+                  id="sun"
+                  style={{
+                    color:
+                      weatherCondition === "Rain" && screenWidth <= 768
+                        ? "white"
+                        : "black",
+                  }}
+                >
+                  <WiSunset
+                    style={{ width: "40%", height: "40%", cursor: "pointer" }}
+                  />
                   <p>
                     Sunset:{" "}
                     {new Date(
@@ -138,7 +172,15 @@ function Home() {
             <div className="Wind">
               {weatherData && (
                 <>
-                  <div id="wind">
+                  <div
+                    id="wind"
+                    style={{
+                      color:
+                        weatherCondition === "Rain" && screenWidth <= 768
+                          ? "white"
+                          : "black",
+                    }}
+                  >
                     <p>
                       Wind Speed: {weatherData.wind && weatherData.wind.speed}{" "}
                       m/s
